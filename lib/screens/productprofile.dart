@@ -39,8 +39,10 @@ class _ProductProfilePageState extends State<ProductProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          myAppBar(context, title: name ?? 'Product Details', isHome: false),
+      appBar: myAppBar(context, title: name ?? 'Product Details', isHome: false,
+          onLeadingPressed: () {
+        Navigator.pop(context);
+      }),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

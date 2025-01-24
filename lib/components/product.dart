@@ -4,7 +4,10 @@ Widget productCard(BuildContext context,
     {required String image,
     required String name,
     required String price,
-    required Function() onPressed}) {
+    required Function() onPressed,
+    bool showWishlistBadge = false,
+    bool isWishlist = false,
+    Function()? onWishlistPressed}) {
   return GestureDetector(
     onTap: onPressed,
     child: Container(
@@ -24,13 +27,37 @@ Widget productCard(BuildContext context,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.network(
+                    image,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                ),
+                if (showWishlistBadge)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: onWishlistPressed,
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isWishlist ? Icons.favorite : Icons.favorite_border,
+                          size: 20,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           Padding(

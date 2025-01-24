@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-AppBar myAppBar(BuildContext context,
-    {String title = "Boli Bazaar", bool isHome = true}) {
+AppBar myAppBar(
+  BuildContext context, {
+  String title = "Boli Bazaar",
+  bool isHome = true,
+  required Function() onLeadingPressed,
+}) {
   return AppBar(
     leading: Center(
       child: GestureDetector(
-        onTap: () {
-          if (!isHome) Navigator.pop(context);
-        },
-        child: FaIcon(
-          isHome ? Icons.menu : Icons.arrow_back,
-          color: Colors.grey.shade700,
-          size: 24,
+        onTap: onLeadingPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FaIcon(
+            isHome ? Icons.menu : Icons.arrow_back,
+            color: Colors.grey.shade700,
+            size: 24,
+          ),
         ),
       ),
     ),
@@ -34,8 +39,8 @@ AppBar myAppBar(BuildContext context,
             IconButton(
               icon: Stack(
                 children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
+                  FaIcon(
+                    FontAwesomeIcons.store,
                     color: Colors.grey.shade700,
                     size: 26,
                   ),
