@@ -1,6 +1,7 @@
 import 'package:dostrobajar/constants/pages.dart';
 import 'package:dostrobajar/screens/homepage.dart';
 import 'package:dostrobajar/screens/productprofile.dart';
+import 'package:dostrobajar/screens/intro_screen.dart';
 import 'package:dostrobajar/screens/splash_screen.dart';
 import 'package:dostrobajar/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        Routes.splash: (context) => SplashScreen(),
+        Routes.splashScreen: (context) => SplashScreen(),
+        Routes.introScreen: (context) => IntroScreen(),
         Routes.home: (context) => HomePage(),
         Routes.productProfile: (context) => ProductProfilePage(),
       },
-      initialRoute: '/splash',
+      initialRoute: Routes.splashScreen,
       debugShowCheckedModeBanner: false,
       theme: appTheme(),
-      home: SplashScreen(),
     );
   }
 }
