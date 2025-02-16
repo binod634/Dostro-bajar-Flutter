@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../constants/pages.dart';
 
 Drawer returnLeftDrawer(BuildContext context) {
   return Drawer(
@@ -9,51 +12,49 @@ Drawer returnLeftDrawer(BuildContext context) {
           padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           width: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.blue.shade500,
-                Colors.blue.shade600,
-              ],
-            ),
+            color: Colors.blue.shade600,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 70,
-                height: 70,
+                width: 90,
+                height: 90,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withAlpha(50),
+                          blurRadius: 10,
+                          spreadRadius: 1)
+                    ]),
                 child: ClipOval(
                   child: Image.asset(
                     'assets/images/pic.gif',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.person,
-                      size: 40,
+                      size: 50,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 16),
               Text(
                 'John Doe',
                 style: GoogleFonts.lato(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                'john.doe@example.com',
+                Supabase.instance.client.auth.currentUser?.email ?? '',
                 style: GoogleFonts.lato(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
+                  color: Colors.white.withAlpha(200),
+                  fontSize: 16,
                 ),
               ),
             ],
@@ -61,50 +62,52 @@ Drawer returnLeftDrawer(BuildContext context) {
         ),
         Expanded(
           child: Container(
-            color: Colors.white,
+            color: Colors.grey.shade50,
             child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.symmetric(vertical: 12),
               children: [
                 _buildDrawerItem(
                   context,
-                  icon: Icons.home_outlined,
+                  icon: Icons.home_rounded,
                   title: 'Home',
                   onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.shopping_bag_outlined,
-                  title: 'My Orders',
-                  onTap: () => Navigator.pop(context),
+                  icon: Icons.shopping_bag_rounded,
+                  title: 'My Products',
+                  onTap: () => {
+                    Navigator.of(context).pushNamed(Routes.warehouse),
+                  },
                 ),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.favorite_outline,
+                  icon: Icons.favorite_rounded,
                   title: 'Wishlist',
                   onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.local_shipping_outlined,
-                  title: 'Shipping Address',
+                  icon: Icons.person_rounded,
+                  title: 'My Profile',
                   onTap: () => Navigator.pop(context),
                 ),
-                Divider(height: 1, color: Colors.grey.shade300),
+                Divider(height: 24, thickness: 1, color: Colors.grey.shade200),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.settings_outlined,
+                  icon: Icons.settings_rounded,
                   title: 'Settings',
                   onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.info_outline,
+                  icon: Icons.info_rounded,
                   title: 'About Us',
                   onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context,
-                  icon: Icons.help_outline,
+                  icon: Icons.help_rounded,
                   title: 'Help & Support',
                   onTap: () => Navigator.pop(context),
                 ),
@@ -116,12 +119,15 @@ Drawer returnLeftDrawer(BuildContext context) {
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Column(
             children: [
-              Divider(height: 1, color: Colors.grey.shade300),
+              Divider(height: 1, color: Colors.grey.shade200),
               _buildDrawerItem(
                 context,
-                icon: Icons.logout,
+                icon: Icons.logout_rounded,
                 title: 'Logout',
-                onTap: () => Navigator.pop(context),
+                onTap: () => {
+                  Supabase.instance.client.auth.signOut(),
+                  Navigator.pop(context)
+                },
                 isLogout: true,
               ),
             ],
@@ -142,19 +148,18 @@ Widget _buildDrawerItem(
   return ListTile(
     leading: Icon(
       icon,
-      color: isLogout ? Colors.red : Colors.grey.shade700,
-      size: 22,
+      color: isLogout ? Colors.red.shade400 : Colors.grey.shade700,
+      size: 26,
     ),
     title: Text(
       title,
       style: GoogleFonts.lato(
         fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: isLogout ? Colors.red : Colors.grey.shade800,
+        fontWeight: FontWeight.w600,
+        color: isLogout ? Colors.red.shade400 : Colors.grey.shade800,
       ),
     ),
     dense: true,
-    horizontalTitleGap: 0,
     onTap: onTap,
   );
 }

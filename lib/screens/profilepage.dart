@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,9 +12,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final Map<String, dynamic> userData = {
     'name': 'John Doe',
-    'email': 'john.doe@example.com',
-    'phone': '+977 9812345678',
-    'address': 'Kathmandu, Nepal',
+    'email': Supabase.instance.client.auth.currentUser?.email ?? '',
+    'phone':
+        Supabase.instance.client.auth.currentUser?.userMetadata?['phone'] ?? '',
+    'address':
+        Supabase.instance.client.auth.currentUser?.userMetadata?['address'] ??
+            'Unknown Address',
     'listings': 15,
     'views': 234,
     'likes': 56,

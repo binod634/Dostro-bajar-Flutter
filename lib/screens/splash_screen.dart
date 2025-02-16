@@ -1,6 +1,10 @@
+import 'package:dostrobajar/provider/product_provider.dart';
+import 'package:dostrobajar/services/product.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dostrobajar/constants/pages.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/sharedpreference.dart';
 
@@ -24,6 +28,9 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
+
+    // api calls.
+    Provider.of<ProductProvider>(context, listen: false).loadProducts();
 
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(

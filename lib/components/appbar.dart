@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../constants/pages.dart';
+
 AppBar myAppBar(
   BuildContext context, {
   String title = "Boli Bazaar",
@@ -39,10 +41,15 @@ AppBar myAppBar(
             IconButton(
               icon: Stack(
                 children: [
-                  FaIcon(
-                    FontAwesomeIcons.store,
-                    color: Colors.grey.shade700,
-                    size: 26,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.warehouse);
+                    },
+                    child: FaIcon(
+                      FontAwesomeIcons.store,
+                      color: Colors.grey.shade700,
+                      size: 26,
+                    ),
                   ),
                   Positioned(
                     right: 0,
