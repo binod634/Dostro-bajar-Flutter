@@ -4,6 +4,7 @@ import 'package:dostrobajar/services/product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/pages.dart';
 import '../provider/product_provider.dart';
 
 class EcommercePage extends StatefulWidget {
@@ -57,12 +58,14 @@ class _EcommercePageState extends State<EcommercePage> {
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
-                        '/product-profile',
+                        Routes.productProfile,
                         arguments: {
                           "name": product.name,
                           "image": product.imageUrl,
                           "price": product.price,
                           "id": product.id,
+                          "description": product.description,
+                          "quantity": product.quantity,
                         },
                       );
                     },

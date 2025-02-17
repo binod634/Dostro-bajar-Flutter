@@ -1,4 +1,5 @@
 import 'package:dostrobajar/components/appbar.dart';
+import 'package:dostrobajar/components/dialog.dart';
 import 'package:dostrobajar/components/nolisting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,44 +39,58 @@ class _WarehousePageState extends State<WarehousePage> {
       body: Consumer<ProductProvider>(
         builder: (context, provider, child) {
           if (provider.products.isEmpty) {
-            return EmptyListing();
+            return const EmptyListing();
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             itemCount: provider.products.length,
             itemBuilder: (context, index) {
               final product = provider.products[index];
               return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                elevation: 4,
+                margin: const EdgeInsets.only(bottom: 12),
+                elevation: 2,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                   onTap: () {
-                    // Handle tap
+                    Navigator.pushNamed(
+                      context,
+                      Routes.productProfile,
+                      arguments: {
+                        "id": product.id,
+                        "name": product.name,
+                        "image": product.imageUrl,
+                        "price": product.price,
+                        "description": product.description,
+                        "quantity": product.quantity,
+                      },
+                    );
                   },
-                  child: Padding(
+                  child: Container(
                     padding: const EdgeInsets.all(12),
                     child: Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: product.imageUrl != null &&
-                                  product.imageUrl!.isNotEmpty
-                              ? Image.network(
-                                  product.imageUrl!,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  width: 100,
-                                  height: 100,
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.image),
-                                ),
+                        Hero(
+                          tag: 'product_image_${product.id}',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: product.imageUrl.isNotEmpty
+                                ? Image.network(
+                                    product.imageUrl,
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    width: 120,
+                                    height: 120,
+                                    color: Colors.grey[200],
+                                    child: const Icon(Icons.image, size: 40),
+                                  ),
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -95,37 +110,46 @@ class _WarehousePageState extends State<WarehousePage> {
                               Text(
                                 '\$${product.price.toStringAsFixed(2)}',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue.shade700,
+                                  fontSize: 17,
+                                  color: Colors.blue.shade800,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.inventory_2_outlined,
-                                    size: 16,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'Stock: ${product.quantity}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.inventory_2_outlined,
+                                      size: 16,
+                                      color: Colors.blue[700],
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Stock: ${product.quantity}',
+                                      style: TextStyle(
+                                        color: Colors.blue[700],
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              if (product.description != null &&
-                                  product.description!.isNotEmpty) ...[
-                                const SizedBox(height: 4),
+                              if (product.description.isNotEmpty) ...[
+                                const SizedBox(height: 6),
                                 Text(
-                                  product.description!,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
+                                  product.description,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[600],
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -135,41 +159,39 @@ class _WarehousePageState extends State<WarehousePage> {
                           ),
                         ),
                         Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit_outlined),
                               onPressed: () {
                                 // Handle edit
                               },
-                              color: Colors.grey,
+                              color: Colors.blue[700],
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete_outline),
                               onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Delete Product'),
-                                    content: const Text(
-                                        'Are you sure you want to delete this product?'),
+                                showCustomDialog(context,
+                                    title: 'Delete Product',
+                                    content:
+                                        'Are you sure you want to delete this product?',
                                     actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          provider.removeProduct(product);
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Delete'),
-                                      ),
+                                      DialogAction(
+                                          label: 'Cancel',
+                                          onPressed: () =>
+                                              Navigator.pop(context)),
+                                      DialogAction(
+                                          label: 'Delete',
+                                          isDestructive: true,
+                                          onPressed: () {
+                                            provider.removeProduct(product);
+                                            Navigator.pop(context);
+                                          }),
                                     ],
-                                  ),
-                                );
+                                    isDismissible: true,
+                                    icon: Icon(Icons.delete_outline_sharp));
                               },
-                              color: Colors.red,
+                              color: Colors.red[400],
                             ),
                           ],
                         ),

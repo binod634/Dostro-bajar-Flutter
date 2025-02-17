@@ -1,3 +1,4 @@
+import 'package:dostrobajar/components/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -125,8 +126,22 @@ Drawer returnLeftDrawer(BuildContext context) {
                 icon: Icons.logout_rounded,
                 title: 'Logout',
                 onTap: () => {
-                  Supabase.instance.client.auth.signOut(),
-                  Navigator.pop(context)
+                  showCustomDialog(context,
+                      title: 'Logout',
+                      content: 'Are you sure you want to logout?',
+                      actions: [
+                        DialogAction(
+                            label: 'Yes',
+                            isDestructive: true,
+                            onPressed: () => {
+                                  Supabase.instance.client.auth.signOut(),
+                                  Navigator.pop(context)
+                                }),
+                        DialogAction(
+                          label: 'No',
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ]),
                 },
                 isLogout: true,
               ),
