@@ -175,6 +175,22 @@ class _ProductProfileContentState extends State<_ProductProfileContent> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BidsPage(product: widget.product),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.remove_red_eye),
+                    label: const Text('See All Bids'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.blue,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   const Text(
                     'Description',
                     style: TextStyle(
@@ -209,12 +225,6 @@ class _ProductProfileContentState extends State<_ProductProfileContent> {
                           PlaceBidPage(product: widget.product),
                     ),
                   );
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   const SnackBar(
-                  //     content: Text('Bid placed successfully!'),
-                  //     duration: Duration(seconds: 1),
-                  //   ),
-                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),

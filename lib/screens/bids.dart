@@ -27,7 +27,11 @@ class _BidsPageState extends State<BidsPage> {
     try {
       final response = await supabase
           .from('product-bids')
-          .select('*, products(*)')
+          .select('''
+            *,
+            products(*),
+            bidder_uid(*)
+          ''')
           .eq('product_id', widget.product.id.toString())
           .order('created_at', ascending: false);
 
@@ -79,7 +83,8 @@ class _BidsPageState extends State<BidsPage> {
                     itemCount: bids.length,
                     itemBuilder: (context, index) {
                       final bid = bids[index];
-                      final bidder = bid['profiles'] as Map<String, dynamic>;
+                      final bidder = bid['profiles'] as Map<String, dynamic>? ??
+                          {'full_name': 'Anonymous', 'avatar_url': null};
                       final createdAt = DateTime.parse(bid['created_at']);
 
                       return Card(
@@ -93,7 +98,7 @@ class _BidsPageState extends State<BidsPage> {
                                     ? NetworkImage(bidder['avatar_url'])
                                     : null,
                                 child: bidder['avatar_url'] == null
-                                    ? Text(bidder['full_name'][0]
+                                    ? Text((bidder['full_name'] ?? 'A')[0]
                                         .toString()
                                         .toUpperCase())
                                     : null,
