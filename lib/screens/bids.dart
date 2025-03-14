@@ -29,11 +29,11 @@ class _BidsPageState extends State<BidsPage> {
           .from('product-bids')
           .select('''
             *,
-            products(*),
-            bidder_uid(*)
+            products(*)
           ''')
           .eq('product_id', widget.product.id.toString())
           .order('created_at', ascending: false);
+      print("completed first stage.");
 
       final bidsResponse = await supabase
           .from('product-bids')
@@ -41,7 +41,9 @@ class _BidsPageState extends State<BidsPage> {
           .eq('product_id', widget.product.id.toString())
           .count();
 
-      print('Bids: ' + response.length.toString());
+      print("completed second stage.");
+
+      print('Bids: ${response.length}');
       if (mounted) {
         setState(() {
           bids = List<Map<String, dynamic>>.from(response);
@@ -52,7 +54,9 @@ class _BidsPageState extends State<BidsPage> {
       if (mounted) {
         setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading bids: $e')),
+          SnackBar(
+              content: Text('Error loading bids: $e'),
+              duration: const Duration(minutes: 2)),
         );
       }
     }

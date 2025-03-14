@@ -1,8 +1,5 @@
-import 'dart:math';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/v4.dart';
 import 'dart:typed_data';
 
 import '../services/product.dart';
@@ -20,7 +17,7 @@ class ProductProvider extends ChangeNotifier {
 
       notifyListeners();
 
-      print("Got datas " + response.toString());
+      print("Got datas $response");
     } catch (e) {
       print('Error loading products: $e');
     }
@@ -55,15 +52,13 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> removeProduct(Product product) async {
     try {
-      if (product.imageUrl != null) {
-        final imagePathRegExp = RegExp(r'product-images/(.+)');
-        final match = imagePathRegExp.firstMatch(product.imageUrl!);
-        if (match != null) {
-          final imagePath = match.group(1);
-          await _supabase.storage.from('product-images').remove([imagePath!]);
-        }
+      final imagePathRegExp = RegExp(r'product-images/(.+)');
+      final match = imagePathRegExp.firstMatch(product.imageUrl);
+      if (match != null) {
+        final imagePath = match.group(1);
+        await _supabase.storage.from('product-images').remove([imagePath!]);
       }
-
+    
       await _supabase.from('products').delete().eq('id', product.id!);
 
       products.remove(product);

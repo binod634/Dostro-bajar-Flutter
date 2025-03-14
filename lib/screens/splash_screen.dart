@@ -1,10 +1,8 @@
 import 'package:dostrobajar/provider/product_provider.dart';
-import 'package:dostrobajar/services/product.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dostrobajar/constants/pages.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/sharedpreference.dart';
 

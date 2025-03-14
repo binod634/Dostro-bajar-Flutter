@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/pages.dart';
 import '../provider/product_provider.dart';
-import '../services/product.dart';
 
 class WarehousePage extends StatefulWidget {
   const WarehousePage({super.key});
