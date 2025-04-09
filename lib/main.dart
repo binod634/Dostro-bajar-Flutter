@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'constants/supabase.dart';
 import 'provider/product_provider.dart';
+import 'provider/profile_provider.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/warehouse.dart';
@@ -34,6 +35,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         routes: {

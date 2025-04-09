@@ -4,7 +4,10 @@ import 'package:dostrobajar/screens/ecommercepage.dart';
 import 'package:dostrobajar/screens/profilepage.dart';
 import 'package:dostrobajar/screens/login.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../provider/profile_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,8 +18,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  initState() {
+  void initState() {
     super.initState();
+    Provider.of<ProfileProvider>(context, listen: false).getUserdata();
   }
 
   int _currentPage = 0;
