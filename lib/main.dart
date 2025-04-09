@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'constants/supabase.dart';
 import 'provider/product_provider.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
@@ -17,9 +18,8 @@ import 'screens/warehouse.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://wfllxhxnsjnsughmkhjd.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmbGx4aHhuc2puc3VnaG1raGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2MTcxMTgsImV4cCI6MjA1NTE5MzExOH0.DfOL9FBC_5W4VdOMm1bOvOduPdIHRQO9WB_LoXWsYsU',
+    url: SupabaseConstants.urlString,
+    anonKey: SupabaseConstants.anonKey,
   );
 
   runApp(const MainApp());

@@ -1,5 +1,6 @@
 class Product {
   int? id;
+  String ownerName;
   String name;
   String? uuid;
   String description;
@@ -10,6 +11,7 @@ class Product {
   Product(
       {this.id,
       required this.name,
+      required this.ownerName,
       this.uuid,
       required this.description,
       required this.price,
@@ -20,6 +22,7 @@ class Product {
     return Product(
       id: json['id'] as int?,
       name: json['name'] as String,
+      ownerName: json['bidder_name'] as String,
       uuid: json['uuid'] as String?,
       description: json['description'] as String,
       price: json['price'] as int,
@@ -31,6 +34,7 @@ class Product {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'ownerName': ownerName,
       'uuid': uuid,
       'description': description,
       'price': price,

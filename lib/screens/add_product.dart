@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:typed_data';
 import '../components/appbar.dart';
 import '../provider/product_provider.dart';
@@ -14,6 +15,7 @@ class AddProductPage extends StatefulWidget {
 }
 
 class _AddProductPageState extends State<AddProductPage> {
+  bool isloading = false;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
@@ -37,36 +39,66 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   void _addProduct() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        final navigator = Navigator.of(context);
+    if (!mounted) return;
 
-        var product = Product(
-          name: _nameController.text,
-          price: int.parse(_priceController.text),
-          quantity: int.parse(_quantityController.text),
-          description: _descriptionController.text,
-          imageUrl: '',
-        );
-        await Provider.of<ProductProvider>(context, listen: false).addProduct(
-            product,
-            imageFile: _selectedImageBytes,
-            imagePath: _imagePath);
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-        if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(content: Text('Product added successfully')),
-          );
-          navigator.pop();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error adding product: $e')),
-          );
-        }
-      }
+    setState(() {
+      isloading = true;
+    });
+
+    String? uuid = Supabase.instance.client.auth.currentUser?.id;
+    String? firstname = await Supabase
+        .instance.client.auth.currentUser?.userMetadata?['first_name'];
+    String? lastname = await Supabase
+        .instance.client.auth.currentUser?.userMetadata?['last_name'];
+    String ownerName = '$firstname $lastname';
+
+    try {
+      if (!mounted) return;
+
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+
+      var product = Product(
+        ownerName: ownerName,
+        name: _nameController.text,
+        uuid: uuid,
+        price: int.parse(_priceController.text),
+        quantity: int.parse(_quantityController.text),
+        description: _descriptionController.text,
+        imageUrl: '',
+      );
+
+      if (!mounted) return;
+
+      await Provider.of<ProductProvider>(context, listen: false).addProduct(
+          product,
+          imageFile: _selectedImageBytes,
+          imagePath: _imagePath);
+
+      if (!mounted) return;
+
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Product added successfully')),
+      );
+      navigator.pop();
+
+      setState(() {
+        isloading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isloading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error adding product: $e')),
+      );
     }
   }
 
@@ -206,20 +238,23 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _addProduct,
+                  onPressed: isloading ? null : _addProduct,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Add Product',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: isloading
+                      ? CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 5)
+                      : Text(
+                          'Add Product',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ],
             ),

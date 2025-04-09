@@ -34,7 +34,6 @@ class _BidsPageState extends State<BidsPage> {
           .eq('product_id', widget.product.id.toString())
           .order('created_at', ascending: false);
       print("completed first stage.");
-
       final bidsResponse = await supabase
           .from('product-bids')
           .select('bidder_uid')

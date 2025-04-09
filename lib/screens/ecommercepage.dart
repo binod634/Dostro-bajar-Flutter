@@ -60,6 +60,7 @@ class _EcommercePageState extends State<EcommercePage> {
                         Routes.productProfile,
                         arguments: {
                           "name": product.name,
+                          "ownerName": product.ownerName,
                           "image": product.imageUrl,
                           "price": product.price,
                           "id": product.id,

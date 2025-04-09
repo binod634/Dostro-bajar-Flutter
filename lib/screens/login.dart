@@ -40,9 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         print("Auth response: ${response.session?.accessToken}");
-        // if (mounted) {
-        //   Navigator.pushReplacementNamed(context, Routes.home);
-        // }
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, Routes.home);
+        }
       } on AuthException catch (error) {
         if (mounted) {
           showCustomDialog(context, title: 'Error', content: error.message);

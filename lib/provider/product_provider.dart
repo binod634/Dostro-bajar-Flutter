@@ -58,7 +58,7 @@ class ProductProvider extends ChangeNotifier {
         final imagePath = match.group(1);
         await _supabase.storage.from('product-images').remove([imagePath!]);
       }
-    
+
       await _supabase.from('products').delete().eq('id', product.id!);
 
       products.remove(product);

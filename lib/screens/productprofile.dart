@@ -14,6 +14,7 @@ class ProductProfilePage extends StatelessWidget {
     final Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final product = Product(
+      ownerName: args['ownerName'],
       id: args['id'],
       name: args['name'],
       imageUrl: args['image'],

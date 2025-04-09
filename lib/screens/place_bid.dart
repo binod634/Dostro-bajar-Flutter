@@ -36,10 +36,16 @@ class _PlaceBidPageState extends State<PlaceBidPage> {
       final bidAmount = int.parse(_bidAmountController.text);
       final quantity = int.parse(_quantityController.text);
       final userId = supabase.auth.currentUser!.id;
+      String? firstname = await Supabase
+          .instance.client.auth.currentUser?.userMetadata?['first_name'];
+      String? lastname = await Supabase
+          .instance.client.auth.currentUser?.userMetadata?['last_name'];
+      String ownerName = '$firstname $lastname';
 
       await supabase.from('product-bids').insert({
         'product_id': widget.product.id,
         'bidder_uid': userId,
+        'bidder_name': ownerName,
         'price': bidAmount,
         'quantity': quantity,
         'created_at': DateTime.now().toIso8601String(),

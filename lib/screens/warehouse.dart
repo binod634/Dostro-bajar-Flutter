@@ -61,6 +61,7 @@ class _WarehousePageState extends State<WarehousePage> {
                       arguments: {
                         "id": product.id,
                         "name": product.name,
+                        "ownerName": product.ownerName,
                         "image": product.imageUrl,
                         "price": product.price,
                         "description": product.description,

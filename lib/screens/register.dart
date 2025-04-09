@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+
+import '../services/userdata.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,88 +20,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-  Position? _currentPosition;
-  String _currentAddress = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return;
-
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ));
-      setState(() => _currentPosition = position);
-      await _getAddressFromLatLng(_currentPosition!);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Location services are disabled. Please enable the services')));
-      }
-      return false;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Location permissions are denied')));
-        }
-        return false;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Location permissions are permanently denied')));
-      }
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<void> _getAddressFromLatLng(Position position) async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-
-      Placemark place = placemarks[0];
-      setState(() {
-        _currentAddress =
-            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-        _addressController.text = _currentAddress;
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
@@ -115,12 +38,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
             email: _emailController.text,
             password: _passwordController.text,
             data: {
-              'phone': _phoneController.text,
-              'address': _addressController.text,
-              'latitude': _currentPosition?.latitude,
-              'longitude': _currentPosition?.longitude,
+              'first_name': _firstNameController.text,
+              'last_name': _lastNameController.text,
             });
 
+        await Supabase.instance.client.auth.signOut();
+        var supabase = Supabase.instance.client;
+        print(
+            "Sending user data for Registration to db.........................");
+        var userData = Userdata(
+          lastName: _lastNameController.text,
+          email: _emailController.text,
+          imageUrl: " ",
+          firstName: _firstNameController.text,
+        );
+        try {
+          await supabase.from('users').insert(userData.toJson());
+          print(
+              "Sending user data for Registration to db.........................");
+        } catch (e) {
+          print("Error occured on putting user. Error: $e");
+        }
         if (mounted) {
           showCustomDialog(
             context,
@@ -228,6 +166,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: _firstNameController,
+                          decoration: InputDecoration(
+                            labelText: 'First Name',
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your first name';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
+                          controller: _lastNameController,
+                          decoration: InputDecoration(
+                            labelText: 'Last Name',
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your last name';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
@@ -243,31 +209,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                             return null;
                           },
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            labelText: 'Phone Number',
-                            prefixIcon: Icon(Icons.phone_outlined),
-                          ),
-                          keyboardType: TextInputType.phone,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your phone number';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _addressController,
-                          decoration: InputDecoration(
-                            labelText: 'Address',
-                            prefixIcon: Icon(Icons.location_on_outlined),
-                          ),
-                          readOnly: true,
-                          maxLines: 2,
                         ),
                         SizedBox(height: 16),
                         TextFormField(
@@ -347,8 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, Routes.login);
+                                Navigator.of(context).pop();
                               },
                               child: Text(
                                 'Sign In',
@@ -376,8 +316,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 }

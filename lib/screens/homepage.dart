@@ -14,6 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  initState() {
+    super.initState();
+  }
+
   int _currentPage = 0;
   List<Widget> pages = <Widget>[
     EcommercePage(),
@@ -32,9 +37,7 @@ class _HomePageState extends State<HomePage> {
           print('Auth state changed: ${snapshot.data?.session}');
           print('Auth event changed: ${snapshot.data?.event}');
 
-          final session = snapshot.data?.session;
-
-          if (session == null) {
+          if (snapshot.data?.session == null) {
             return LoginScreen(enableGoogleSignIn: false);
           }
 
