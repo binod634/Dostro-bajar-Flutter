@@ -86,8 +86,8 @@ class _BidsPageState extends State<BidsPage> {
                     itemCount: bids.length,
                     itemBuilder: (context, index) {
                       final bid = bids[index];
-                      final bidder = bid['profiles'] as Map<String, dynamic>? ??
-                          {'full_name': 'Anonymous', 'avatar_url': null};
+                      final bidder = bids[index];
+
                       final createdAt = DateTime.parse(bid['created_at']);
 
                       return Card(
@@ -112,7 +112,7 @@ class _BidsPageState extends State<BidsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      bidder['full_name'] ?? 'Anonymous',
+                                      bidder['bidder_name'] ?? 'Anonymous',
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

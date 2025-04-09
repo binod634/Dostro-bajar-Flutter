@@ -22,7 +22,7 @@ class Product {
     return Product(
       id: json['id'] as int?,
       name: json['name'] as String,
-      ownerName: json['bidder_name'] as String,
+      ownerName: json['ownerName'] as String,
       uuid: json['uuid'] as String?,
       description: json['description'] as String,
       price: json['price'] as int,

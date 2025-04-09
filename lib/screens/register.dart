@@ -49,7 +49,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         var userData = Userdata(
           lastName: _lastNameController.text,
           email: _emailController.text,
-          imageUrl: " ",
+          imageUrl:
+              "https://wfllxhxnsjnsughmkhjd.supabase.co/storage/v1/object/public/profile-images//pic.gif",
           firstName: _firstNameController.text,
         );
         try {

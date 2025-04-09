@@ -12,6 +12,7 @@ class ProductProvider extends ChangeNotifier {
     try {
       final response = await _supabase.from('products').select();
 
+
       products =
           (response as List).map((json) => Product.fromJson(json)).toList();
 
