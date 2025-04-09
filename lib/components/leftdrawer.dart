@@ -7,11 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/pages.dart';
+import '../services/userdata.dart';
 
 Drawer returnLeftDrawer(BuildContext context) {
   return Drawer(
     child: Consumer<ProfileProvider>(builder: (context, profileProvider, _) {
-      final userdata = profileProvider.userdata;
+      final Userdata userdata = profileProvider.userdata;
       return Column(
         children: [
           Container(
@@ -37,23 +38,24 @@ Drawer returnLeftDrawer(BuildContext context) {
                       ]),
                   child: ClipOval(
                     child: CachedNetworkImage(
-                      imageUrl: userdata?.imageUrl ?? "",
+                      imageUrl: userdata.imageUrl.replaceAll(' ', ''),
                       fit: BoxFit.cover,
                       placeholder: (context, url) =>
                           CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.white,
-                      ),
+                      errorWidget: (context, url, error) {
+                        print(error);
+                        return Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        );
+                      },
                     ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Text(
-                  userdata != null
-                      ? '${userdata.firstName} ${userdata.lastName}'
-                      : 'Guest User',
+                  '${userdata.firstName} ${userdata.lastName}',
                   style: GoogleFonts.lato(
                     color: Colors.white,
                     fontSize: 24,

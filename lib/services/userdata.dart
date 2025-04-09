@@ -1,5 +1,5 @@
 class Userdata {
-  String? id;
+  int? id;
   String imageUrl;
   String firstName;
   String lastName;
@@ -15,7 +15,7 @@ class Userdata {
 
   factory Userdata.fromJson(Map<String, dynamic> json) {
     return Userdata(
-      id: json['id'] as String?,
+      id: json['id'] as int?,
       imageUrl: json['imageUrl'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
