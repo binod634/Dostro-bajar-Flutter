@@ -1,5 +1,6 @@
 import 'package:dostrobajar/constants/pages.dart';
 import 'package:dostrobajar/screens/add_product.dart';
+import 'package:dostrobajar/screens/bids_profile.dart';
 import 'package:dostrobajar/screens/homepage.dart';
 import 'package:dostrobajar/screens/productprofile.dart';
 import 'package:dostrobajar/screens/intro_screen.dart';
