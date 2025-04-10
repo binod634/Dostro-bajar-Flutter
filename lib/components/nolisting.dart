@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class EmptyListing extends StatelessWidget {
-  const EmptyListing({super.key});
+  final String? msg;
+  const EmptyListing({super.key, this.msg});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,8 @@ class EmptyListing extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'No products found in the database.\nPlease try again later.',
+              msg ??
+                  'No products found in the database.\nPlease try again later.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

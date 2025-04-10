@@ -1,26 +1,54 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:typed_data';
+import 'package:logging/logging.dart';
 
 import '../services/product.dart';
 
 class ProductProvider extends ChangeNotifier {
   final _supabase = Supabase.instance.client;
   List<Product> products = [];
+  final _logger = Logger('ProductProvider');
+
+  List<int> _biddedOn = <int>[];
+
+  get biddedProductsList =>
+      products.where((product) => _biddedOn.contains(product.id)).toList();
 
   Future<void> loadProducts() async {
+    if (products.isNotEmpty) return;
     try {
       final response = await _supabase.from('products').select();
-
 
       products =
           (response as List).map((json) => Product.fromJson(json)).toList();
 
       notifyListeners();
 
-      print("Got datas $response");
+      _logger.info("Got data $response");
     } catch (e) {
-      print('Error loading products: $e');
+      _logger.severe('Error loading products: $e');
+    }
+  }
+
+  Future<void> loadBiddedProducts() async {
+    await loadProducts();
+    try {
+      final response = await _supabase
+          .from("users")
+          .select("bidded_on")
+          .eq('email', _supabase.auth.currentUser?.email ?? "")
+          .single();
+
+      if (response != null && response['bidded_on'] != null) {
+        _biddedOn =
+            (response['bidded_on'] as List).map((item) => item as int).toList();
+      }
+      notifyListeners();
+    } catch (e) {
+      _logger.severe('Error loading bidded products: $e');
     }
   }
 
@@ -29,7 +57,7 @@ class ProductProvider extends ChangeNotifier {
     try {
       String? imageUrl;
       if (imageFile != null && imagePath != null) {
-        final storageResponse = await _supabase.storage
+        await _supabase.storage
             .from('product-images')
             .uploadBinary(imagePath, imageFile);
 
@@ -47,7 +75,7 @@ class ProductProvider extends ChangeNotifier {
       products.add(product);
       notifyListeners();
     } catch (e) {
-      print('Error adding product: $e');
+      _logger.severe('Error adding product: $e');
     }
   }
 
@@ -65,7 +93,7 @@ class ProductProvider extends ChangeNotifier {
       products.remove(product);
       notifyListeners();
     } catch (e) {
-      print('Error removing product: $e');
+      _logger.severe('Error removing product: $e');
     }
   }
 }

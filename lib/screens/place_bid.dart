@@ -50,7 +50,17 @@ class _PlaceBidPageState extends State<PlaceBidPage> {
         'quantity': quantity,
         'created_at': DateTime.now().toIso8601String(),
       });
+      final users = await supabase
+          .from('users')
+          .select('bidded_on')
+          .eq('email', supabase.auth.currentUser?.email ?? '')
+          .single();
 
+      List<dynamic> biddedOn = users['bidded_on'] ?? [];
+      biddedOn.add(widget.product.id);
+
+      await supabase.from('users').update({'bidded_on': biddedOn}).eq(
+          'email', supabase.auth.currentUser?.email ?? '');
       if (mounted) {
         Navigator.pop(context, true);
         ScaffoldMessenger.of(context).showSnackBar(

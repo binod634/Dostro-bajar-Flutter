@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../provider/profile_provider.dart';
+import 'wishlist.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   int _currentPage = 0;
   List<Widget> pages = <Widget>[
     EcommercePage(),
-    EcommercePage(),
+    WishlistPage(),
     ProfilePage(),
   ];
 

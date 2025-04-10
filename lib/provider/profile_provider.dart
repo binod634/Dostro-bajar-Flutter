@@ -13,10 +13,11 @@ class ProfileProvider extends ChangeNotifier {
     final datas = await supabaseclient
         .from("users")
         .select()
-        .eq("email", currentuserdata?.email ?? '');
-    print(datas);
+        .eq("email", currentuserdata?.email ?? '')
+        .single();
+    (datas);
     if (datas.isNotEmpty) {
-      setUserdata(Userdata.fromJson(datas.first));
+      setUserdata(Userdata.fromJson(datas));
     }
   }
 
