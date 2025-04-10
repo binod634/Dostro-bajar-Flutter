@@ -4,6 +4,7 @@ class Userdata {
   String firstName;
   String lastName;
   String email;
+  int? phoneNumber;
 
   Userdata({
     this.id,
@@ -11,6 +12,7 @@ class Userdata {
     required this.firstName,
     required this.lastName,
     required this.email,
+    this.phoneNumber,
   });
 
   factory Userdata.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Userdata {
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       email: json['email'] as String,
+      phoneNumber: json['phoneNumber'] as int?,
     );
   }
 
@@ -29,6 +32,7 @@ class Userdata {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'phoneNumber': phoneNumber,
     };
   }
 }

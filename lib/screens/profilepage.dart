@@ -199,6 +199,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             _buildInfoTile(
                                 'Email', userdata.email, Icons.email_outlined),
+                            if (userdata.phoneNumber != null) ...[
+                              Divider(),
+                              _buildInfoTile(
+                                  'Phone',
+                                  userdata.phoneNumber.toString(),
+                                  Icons.phone_outlined),
+                            ]
                           ],
                         ),
                       ),

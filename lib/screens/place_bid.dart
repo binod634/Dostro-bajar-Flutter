@@ -48,6 +48,7 @@ class _PlaceBidPageState extends State<PlaceBidPage> {
         'bidder_name': ownerName,
         'price': bidAmount,
         'quantity': quantity,
+        'bidder_email': supabase.auth.currentUser?.email,
         'created_at': DateTime.now().toIso8601String(),
       });
       final users = await supabase

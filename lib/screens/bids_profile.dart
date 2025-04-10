@@ -13,6 +13,73 @@ class BidsProfile extends StatefulWidget {
 }
 
 class _BidsProfileState extends State<BidsProfile> {
+  void showContactsDialog(BuildContext context, String? emailAddress) {
+    var supabase = Supabase.instance.client;
+    supabase
+        .from('users')
+        .select()
+        .eq('email', emailAddress ?? '')
+        .single()
+        .then(
+      (value) {
+        print("value is $value");
+        print("isphone is ${value['phoneNumber'] ?? ''}");
+        String name =
+            '${value['firstName'] ?? ''} ${value['lastName'] ?? ''}'.trim();
+        String phone = value['phoneNumber'].toString();
+        String email = value['email'] ?? '';
+
+        if (name.isEmpty && phone.isEmpty && email.isEmpty) {
+          print("REALLY >>>>");
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text('Contact Information'),
+                    content: const Text("Can't find contact details"),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Close'))
+                    ],
+                  ));
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text('Contact Information'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (name.isNotEmpty) Text('Name: $name'),
+                        if (phone.isNotEmpty) Text('Phone: $phone'),
+                        if (email.isNotEmpty) Text('Email: $email'),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Close'))
+                    ],
+                  ));
+        }
+      },
+    ).onError((error, stackTrace) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text('Contact Information'),
+                content: Text(
+                    "Can't find contact details. error: ${error.toString()}"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close'))
+                ],
+              ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bid = widget.bid;
@@ -96,11 +163,9 @@ class _BidsProfileState extends State<BidsProfile> {
                       const SizedBox(height: 16),
                       _buildDetailRow('Bid Amount', '\$${bid['price']}'),
                       _buildDetailRow('Quantity', '${bid['quantity']} units'),
-                      _buildDetailRow(
-                          'Date',
+                      _buildDetailRow('Date',
                           '${createdAt.day}/${createdAt.month}/${createdAt.year}'),
-                      _buildDetailRow(
-                          'Time',
+                      _buildDetailRow('Time',
                           '${createdAt.hour.toString().padLeft(2, '0')}:${createdAt.minute.toString().padLeft(2, '0')}'),
                       if (bid['message'] != null && bid['message'].isNotEmpty)
                         Column(
@@ -141,7 +206,7 @@ class _BidsProfileState extends State<BidsProfile> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // Implement contact functionality
+                    showContactsDialog(context, bid['bidder_email']);
                   },
                   icon: const Icon(Icons.message),
                   label: const Text('Contact Bidder'),

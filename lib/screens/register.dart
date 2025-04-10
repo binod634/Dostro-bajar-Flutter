@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -40,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             data: {
               'first_name': _firstNameController.text,
               'last_name': _lastNameController.text,
+              'phone_number': _phoneNumberController.text,
             });
 
         await Supabase.instance.client.auth.signOut();
@@ -52,6 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           imageUrl:
               "https://wfllxhxnsjnsughmkhjd.supabase.co/storage/v1/object/public/profile-images//pic.gif",
           firstName: _firstNameController.text,
+          phoneNumber: int.parse(_phoneNumberController.text),
         );
         try {
           await supabase.from('users').insert(userData.toJson());
@@ -195,6 +198,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 16),
                         TextFormField(
+                          controller: _phoneNumberController,
+                          decoration: InputDecoration(
+                            labelText: 'Phone Number',
+                            prefixIcon: Icon(Icons.phone_outlined),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            if (!RegExp(r'^\+?[\d\s-]+$').hasMatch(value)) {
+                              return 'Please enter a valid phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
@@ -319,6 +340,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _confirmPasswordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 }
