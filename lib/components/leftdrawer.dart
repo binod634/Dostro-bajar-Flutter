@@ -110,20 +110,8 @@ Drawer returnLeftDrawer(BuildContext context) {
                       height: 24, thickness: 1, color: Colors.grey.shade200),
                   _buildDrawerItem(
                     context,
-                    icon: Icons.settings_rounded,
-                    title: 'Settings',
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  _buildDrawerItem(
-                    context,
                     icon: Icons.info_rounded,
                     title: 'About Us',
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.help_rounded,
-                    title: 'Help & Support',
                     onTap: () => Navigator.pop(context),
                   ),
                 ],
